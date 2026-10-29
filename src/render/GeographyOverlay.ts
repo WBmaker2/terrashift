@@ -12,8 +12,8 @@ export class GeographyOverlay {
     this.group.name = 'geography-overlay';
     this.scene.add(this.group);
 
-    this.coastlineMesh = this.buildMesh(coastline as any, 0xb7c7cf, 0.32);
-    this.borderMesh = this.buildMesh(borders as any, 0xc9d6dc, 0.26);
+    this.coastlineMesh = this.buildMesh(coastline as any, 0xd6e2ea, 0.5);
+    this.borderMesh = this.buildMesh(borders as any, 0xe6eef3, 0.42);
     this.coastlineMesh.visible = false;
     this.borderMesh.visible = false;
     this.group.add(this.coastlineMesh);
@@ -49,7 +49,7 @@ export class GeographyOverlay {
     }
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
-    const material = new LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false });
+    const material = new LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false, linewidth: 2 });
     const mesh = new LineSegments(geometry, material);
     mesh.frustumCulled = false;
     return mesh;
