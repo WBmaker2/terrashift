@@ -103,8 +103,8 @@ function buildIndices(): number[] {
       const b = row * cols + nextCol;
       const c = (row + 1) * cols + col;
       const d = (row + 1) * cols + nextCol;
-      indices.push(a, c, b);
-      indices.push(b, c, d);
+      indices.push(a, b, c);
+      indices.push(b, d, c);
     }
   }
   return indices;

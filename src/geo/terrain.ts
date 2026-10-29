@@ -353,24 +353,24 @@ export function buildTerrainModel(
         } else if (height > 0.02) {
           if (height < 0.65) {
             const t = clamp(height / 0.65, 0, 1);
-            r = lerp(0.16, 0.3, t);
-            g = lerp(0.46, 0.56, t);
-            b = lerp(0.3, 0.26, t);
+            r = lerp(0.12, 0.26, t);
+            g = lerp(0.36, 0.46, t);
+            b = lerp(0.2, 0.2, t);
           } else if (height < 1.8) {
             const t = (height - 0.65) / 1.15;
-            r = lerp(0.3, 0.48, t);
-            g = lerp(0.56, 0.51, t);
-            b = lerp(0.26, 0.28, t);
+            r = lerp(0.26, 0.42, t);
+            g = lerp(0.46, 0.42, t);
+            b = lerp(0.2, 0.22, t);
           } else if (height < 3.3) {
             const t = (height - 1.8) / 1.5;
-            r = lerp(0.48, 0.62, t);
-            g = lerp(0.51, 0.45, t);
-            b = lerp(0.28, 0.32, t);
+            r = lerp(0.42, 0.54, t);
+            g = lerp(0.42, 0.36, t);
+            b = lerp(0.22, 0.24, t);
           } else if (height < 5.3) {
             const t = (height - 3.3) / 2.0;
-            r = lerp(0.62, 0.74, t);
-            g = lerp(0.45, 0.6, t);
-            b = lerp(0.32, 0.5, t);
+            r = lerp(0.54, 0.68, t);
+            g = lerp(0.36, 0.5, t);
+            b = lerp(0.24, 0.4, t);
           } else if (height < 7.2) {
             const t = (height - 5.3) / 1.9;
             r = lerp(0.74, 0.84, t);
@@ -390,21 +390,21 @@ export function buildTerrainModel(
           }
         } else {
           const depth = clamp(-height / 8.5, 0, 1);
-          r = lerp(0.16, 0.012, depth);
-          g = lerp(0.48, 0.05, depth);
-          b = lerp(0.58, 0.16, depth);
+          r = lerp(0.035, 0.005, depth);
+          g = lerp(0.22, 0.035, depth);
+          b = lerp(0.38, 0.13, depth);
         }
         if (layers.plateColors) {
-          r = lerp(r, plateColors[baseIndex], 0.2);
-          g = lerp(g, plateColors[baseIndex + 1], 0.2);
-          b = lerp(b, plateColors[baseIndex + 2], 0.2);
+          r = lerp(r, plateColors[baseIndex], 0.08);
+          g = lerp(g, plateColors[baseIndex + 1], 0.08);
+          b = lerp(b, plateColors[baseIndex + 2], 0.08);
         }
         const west = heights[row * cols + ((col - 1 + cols) % cols)];
         const east = heights[row * cols + ((col + 1) % cols)];
         const south = heights[Math.max(0, row - 1) * cols + col];
         const north = heights[Math.min(rows - 1, row + 1) * cols + col];
         const slope = (Math.abs(east - west) + Math.abs(north - south)) * 0.5;
-        const shade = clamp(1 - slope * 0.12, 0.74, 1.04);
+        const shade = clamp(1 - slope * 0.14, 0.7, 1.04);
         r *= shade;
         g *= shade;
         b *= shade;

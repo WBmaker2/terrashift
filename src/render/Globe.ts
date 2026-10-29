@@ -2,14 +2,15 @@ import {
   ACESFilmicToneMapping,
   AdditiveBlending,
   AmbientLight,
-  BackSide,
   BufferGeometry,
   Clock,
   DirectionalLight,
   Float32BufferAttribute,
+  FrontSide,
   HemisphereLight,
   Mesh,
   MeshBasicMaterial,
+  Object3D,
   PerspectiveCamera,
   Points,
   PointsMaterial,
@@ -54,6 +55,9 @@ export class Globe {
   private readonly markers: EventMarkers;
   private readonly model: TerrainModel;
   private readonly clock = new Clock();
+  private sun!: DirectionalLight;
+  private headlight!: DirectionalLight;
+  private readonly headlightTarget = new Object3D();
   private readonly raycaster = new Raycaster();
   private readonly pointer = new Vector2();
   private readonly resizeObserver: ResizeObserver;
@@ -130,24 +134,28 @@ export class Globe {
   }
 
   private addLights(): void {
-    this.scene.add(new AmbientLight(0x93b9c9, 0.88));
-    this.scene.add(new HemisphereLight(0x9fd4ea, 0x0b171d, 0.85));
-    const sun = new DirectionalLight(0xfff0d8, 2.55);
-    sun.position.set(5, 2.8, 4.2);
-    this.scene.add(sun);
-    const rim = new DirectionalLight(0x4d8bcf, 0.7);
+    this.scene.add(new AmbientLight(0x93b9c9, 0.5));
+    this.scene.add(new HemisphereLight(0x9fd4ea, 0x1a3038, 0.55));
+    this.sun = new DirectionalLight(0xfff0d8, 2.1);
+    this.sun.position.set(5, 2.8, 4.2);
+    this.scene.add(this.sun);
+    const rim = new DirectionalLight(0x4d8bcf, 0.6);
     rim.position.set(-5, -1.5, -4);
     this.scene.add(rim);
-    const fill = new DirectionalLight(0x86bdd0, 0.85);
+    const fill = new DirectionalLight(0x86bdd0, 0.5);
     fill.position.set(-2, -4, 3);
     this.scene.add(fill);
+    this.headlight = new DirectionalLight(0x9fd4ea, 0.25);
+    this.headlight.target = this.headlightTarget;
+    this.headlightTarget.position.set(0, 0, 0);
+    this.scene.add(this.headlightTarget, this.headlight);
   }
 
   private addAtmosphere(): void {
     const material = new ShaderMaterial({
       transparent: true,
       blending: AdditiveBlending,
-      side: BackSide,
+      side: FrontSide,
       depthWrite: false,
       vertexShader: `
         varying vec3 vNormal;
@@ -242,6 +250,12 @@ export class Globe {
     if (!this.active || document.hidden) return;
     const delta = Math.min(0.06, this.clock.getDelta());
     this.rig.update(delta);
+    this.headlight.position.copy(this.camera.position);
+    const lightDirection = this.camera.position.clone().normalize();
+    lightDirection.applyAxisAngle(new Vector3(0, 1, 0), -0.35);
+    lightDirection.y += 0.45;
+    lightDirection.normalize();
+    this.sun.position.copy(lightDirection.multiplyScalar(9));
     this.markers.update(this.time);
     this.renderer.render(this.scene, this.camera);
   };
