@@ -43,6 +43,7 @@ import {
 } from '../features/missions/missions';
 import { Globe, type GlobePick } from '../render/Globe';
 import { CrossSectionView } from '../render/CrossSectionView';
+import { GeographyOverlay } from '../render/GeographyOverlay';
 import { clearProgress, loadProgress, mergeProgress, saveProgress } from '../storage/progress';
 import { appTemplate } from '../ui/template';
 import { escapeAttr, escapeHtml, qs, qsa, show } from '../ui/dom';
@@ -103,7 +104,9 @@ const LAYER_DEFINITIONS: Array<{ key: keyof LayerState; label: string; note?: st
   { key: 'volcanoes', label: '화산', note: '수렴·발산 경계에 나타남' },
   { key: 'hotspots', label: '열점(핫스팟)', note: '판 경계와 무관한 화산 (하와이 등)' },
   { key: 'crustAge', label: '해양 지각 나이', note: '해령에서 멀수록 오래됨' },
-  { key: 'plateColors', label: '판 색', note: '판별 색을 지형에 섞음' }
+  { key: 'plateColors', label: '판 색', note: '판별 색을 지형에 섞음' },
+  { key: 'coastline', label: '해안선(위치 안내)', note: '실제 해안선 오버레이 · 기본값 끄기' },
+  { key: 'borders', label: '국가 경계선(위치 안내용)', note: '연한 점선 · 판구조 모델과 구분' }
 ];
 
 const PRESETS: Array<{
@@ -172,6 +175,7 @@ export class App {
   private readonly catalog: EventCatalog;
   private readonly store: Store;
   private globe: Globe | null = null;
+  private geographyOverlay: GeographyOverlay | null = null;
   private previewView: CrossSectionView | null = null;
   private readonly fullView: CrossSectionView;
   private previousState: AppState | null = null;
@@ -256,6 +260,7 @@ export class App {
     this.buildWorksheet();
     this.exposeDebug();
     this.scheduleSave();
+    setTimeout(() => this.attachGeoSearch(), 100);
   }
 
   private cacheElements(): Elements {
@@ -312,6 +317,15 @@ export class App {
           onDoubleClick: (pick) => this.handleGlobeDoubleClick(pick)
         }
       );
+      try {
+        this.geographyOverlay = new GeographyOverlay((this.globe as unknown as { scene: import('three').Scene }).scene);
+        this.geographyOverlay.setVisible(
+          Boolean(this.store.state.layers.coastline),
+          Boolean(this.store.state.layers.borders)
+        );
+      } catch (error) {
+        console.warn('Geography overlay failed', error);
+      }
     } catch (error) {
       console.warn('3D globe could not be created', error);
       this.globe = null;
@@ -381,6 +395,7 @@ export class App {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
     document.addEventListener('click', this.handleDocumentClick);
     this.maybeShowTutorial();
+    setTimeout(() => this.attachGeoSearch(), 0);
   }
 
   private readonly handleClick = (event: MouseEvent): void => {
@@ -550,7 +565,7 @@ export class App {
       const key = target.dataset.layer as keyof LayerState;
       this.store.update((state) => ({
         ...state,
-        layers: { ...state.layers, [key]: target.checked }
+        layers: { ...state.layers, [key]: target.checked } as LayerState
       }));
       return;
     }
@@ -851,6 +866,7 @@ export class App {
   private applyLayers(state: AppState): void {
     const layers = this.effectiveLayers(state);
     this.globe?.setLayers({ ...layers, hotspots: state.layers.hotspots });
+    this.geographyOverlay?.setVisible(Boolean(state.layers.coastline), Boolean(state.layers.borders));
     this.syncLayerList();
     if (state.route === 'teacher') this.renderTeacher();
   }
@@ -944,7 +960,7 @@ export class App {
     const hidden = this.hideBoundaryType();
     qsa<HTMLInputElement>('input[data-layer]', this.elements.layerList).forEach((input) => {
       const key = input.dataset.layer as keyof LayerState;
-      input.checked = Boolean(this.store.state.layers[key]);
+      input.checked = Boolean((this.store.state.layers as any)[key]);
       const disabled = hidden && (key === 'boundaries' || key === 'labels');
       input.disabled = disabled;
       input.closest('.toggle')?.classList.toggle('is-disabled', disabled);
@@ -2076,6 +2092,40 @@ export class App {
         this.store.update((s) => ({ ...s, preferences: { ...s.preferences, tutorialSeen: true } }));
         overlay.remove();
       }
+    });
+  }
+
+  private attachGeoSearch(): void {
+    const input = document.getElementById('geo-search') as HTMLInputElement | null;
+    const btn = document.getElementById('geo-search-btn') as HTMLButtonElement | null;
+    if (!input || !btn) return;
+    const go = () => {
+      const value = input.value.trim().toLowerCase();
+      if (!value) return;
+      const map: Record<string, { lat: number; lon: number }> = {
+        대한민국: { lat: 37.5, lon: 127 }, 한국: { lat: 37.5, lon: 127 }, 서울: { lat: 37.5, lon: 127 },
+        일본: { lat: 36, lon: 138 }, 도쿄: { lat: 35.7, lon: 139.7 },
+        중국: { lat: 35, lon: 105 }, 베이징: { lat: 39.9, lon: 116.4 },
+        인도: { lat: 20, lon: 78 },
+        미국: { lat: 39, lon: -98 },
+        호주: { lat: -25, lon: 135 }, 시드니: { lat: -33.9, lon: 151.2 },
+        영국: { lat: 54, lon: -2 }, 프랑스: { lat: 46, lon: 2 }, 독일: { lat: 51, lon: 10 },
+        러시아: { lat: 60, lon: 90 }, 브라질: { lat: -14, lon: -51 }, 아르헨티나: { lat: -38, lon: -63 },
+        남아프리카공화국: { lat: -29, lon: 24 }, 이집트: { lat: 26, lon: 30 },
+        인도네시아: { lat: -2, lon: 118 }, 필리핀: { lat: 12, lon: 122 }, 베트남: { lat: 16, lon: 106 }, 태국: { lat: 15, lon: 101 }
+      };
+      const entry = Object.entries(map).find(([k]) => k === value || k.includes(value) || value.includes(k));
+      if (entry) {
+        this.globe?.focus(entry[1].lat, entry[1].lon, 2.4, true);
+        this.showToast(`${entry[0]} 위치로 이동합니다.`);
+      } else {
+        this.showToast('위치를 찾을 수 없습니다.');
+      }
+    };
+    btn.onclick = go;
+    input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } };
+    this.elements.layerList.querySelectorAll('.geo-labels .chip').forEach((chip) => {
+      chip.addEventListener('click', () => { input.value = chip.textContent || ''; go(); });
     });
   }
 

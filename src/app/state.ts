@@ -22,6 +22,8 @@ export interface LayerState {
   crustAge: boolean;
   plateColors: boolean;
   hotspots?: boolean;
+  coastline?: boolean;
+  borders?: boolean;
 }
 
 export interface MissionState {
@@ -64,7 +66,9 @@ export const DEFAULT_LAYERS: LayerState = {
   volcanoes: true,
   crustAge: false,
   plateColors: true,
-  hotspots: true
+  hotspots: true,
+  coastline: false,
+  borders: false
 };
 
 export function createInitialState(reducedMotion = false): AppState {

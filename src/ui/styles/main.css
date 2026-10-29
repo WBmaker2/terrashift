@@ -2268,6 +2268,35 @@ summary:focus-visible {
   font-size: 12px;
 }
 
+.geolocate-block {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 0.7rem;
+}
+
+.geolocate-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.geo-input {
+  flex: 1;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(10, 30, 36, 0.8);
+  color: var(--text);
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.geo-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
 .tutorial-overlay {
   position: fixed;
   inset: 0;

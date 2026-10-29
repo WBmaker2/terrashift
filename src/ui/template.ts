@@ -29,6 +29,24 @@ export function appTemplate(): string {
                 <button type="button" class="icon-btn panel-close" data-close-panel="left" aria-label="층 패널 닫기">×</button>
               </div>
               <div class="layer-list" id="layer-list"></div>
+              <div class="geolocate-block">
+                <div class="panel-heading" style="margin-top:0.8rem">
+                  <div><span class="eyebrow">LOCATE</span><h2>위치 찾기</h2></div>
+                </div>
+                <div class="geolocate-row">
+                  <input id="geo-search" class="geo-input" type="text" placeholder="예: 대한민국, 일본, 미국" aria-label="국가명 검색" />
+                  <button type="button" class="btn btn-ghost btn-sm" id="geo-search-btn">이동</button>
+                </div>
+                <div class="geo-labels">
+                  <span class="chip">대한민국</span>
+                  <span class="chip">일본</span>
+                  <span class="chip">중국</span>
+                  <span class="chip">인도</span>
+                  <span class="chip">미국</span>
+                  <span class="chip">호주</span>
+                </div>
+                <p class="fine-print">위치 안내용입니다. 판구조 모델과는 별개 레이어입니다.</p>
+              </div>
               <div class="compare-panel">
                 <div class="panel-heading" style="margin-top:0.8rem">
                   <div><span class="eyebrow">COMPARE</span><h2>경계 비교 모드</h2></div>
