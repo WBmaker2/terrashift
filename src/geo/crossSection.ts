@@ -1,6 +1,6 @@
 import type { BoundaryCluster } from './boundaries';
-import { boundaryPlatesLabelKo, boundarySubtypeLabelKo, boundaryTypeLabelKo } from './boundaries';
-import { PLATE_BY_ID } from './plates';
+import { boundarySubtypeLabelKo, boundaryTypeLabelKo, orderedPlates } from './boundaries';
+import type { Plate } from './plates';
 import { clamp } from './sphere';
 import { formatTimeShort } from './time';
 
@@ -54,13 +54,14 @@ function kindFor(cluster: BoundaryCluster): CrossSectionKind {
   return 'continental-continental';
 }
 
-function oceanSideFor(cluster: BoundaryCluster): 'left' | 'right' | 'both' | 'none' {
-  const plateA = PLATE_BY_ID.get(cluster.plateA);
-  const plateB = PLATE_BY_ID.get(cluster.plateB);
-  if (!plateA || !plateB) return 'none';
-  if (plateA.type === 'oceanic' && plateB.type === 'oceanic') return 'both';
-  if (plateA.type === 'continental' && plateB.type === 'continental') return 'none';
-  return plateA.type === 'oceanic' ? 'left' : 'right';
+function oceanSideFor(
+  left: Plate | undefined,
+  right: Plate | undefined
+): 'left' | 'right' | 'both' | 'none' {
+  if (!left || !right) return 'none';
+  if (left.type === 'oceanic' && right.type === 'oceanic') return 'both';
+  if (left.type === 'continental' && right.type === 'continental') return 'none';
+  return left.type === 'oceanic' ? 'left' : 'right';
 }
 
 function baseFeatures(): CrossSectionFeatures {
@@ -87,12 +88,13 @@ export function describeCrossSection(
   const progress = time / 200;
   const kind = cluster ? kindFor(cluster) : 'inactive';
   const features = baseFeatures();
-  const plateA = cluster ? PLATE_BY_ID.get(cluster.plateA) : undefined;
-  const plateB = cluster ? PLATE_BY_ID.get(cluster.plateB) : undefined;
-  const leftPlateKo = plateA?.nameKo ?? '판 A';
-  const rightPlateKo = plateB?.nameKo ?? '판 B';
-  const leftTypeKo = plateA?.type === 'oceanic' ? '해양판' : plateA ? '대륙판' : '';
-  const rightTypeKo = plateB?.type === 'oceanic' ? '해양판' : plateB ? '대륙판' : '';
+  const ordered = cluster ? orderedPlates(cluster) : null;
+  const leftPlate = ordered?.[0];
+  const rightPlate = ordered?.[1];
+  const leftPlateKo = leftPlate?.nameKo ?? '판 A';
+  const rightPlateKo = rightPlate?.nameKo ?? '판 B';
+  const leftTypeKo = leftPlate?.type === 'oceanic' ? '해양판' : leftPlate ? '대륙판' : '';
+  const rightTypeKo = rightPlate?.type === 'oceanic' ? '해양판' : rightPlate ? '대륙판' : '';
   const notesKo: string[] = [];
   let hasVolcano = false;
   let subtitleKo = '';
@@ -198,12 +200,12 @@ export function describeCrossSection(
   return {
     kind,
     titleKo: `${titleKo} · ${cluster ? boundaryTypeLabelKo(cluster.type) : '개념 모델'}`,
-    subtitleKo: cluster ? `${boundaryPlatesLabelKo(cluster)} — ${subtitleKo}` : subtitleKo,
+    subtitleKo: cluster ? `${leftPlateKo} · ${rightPlateKo} — ${subtitleKo}` : subtitleKo,
     captionKo: '개념 단면도 · 실제 지질 단면이 아닙니다.',
     timeLabelKo: formatTimeShort(time),
     notesKo,
     hasVolcano,
-    oceanSide: cluster ? oceanSideFor(cluster) : 'none',
+    oceanSide: cluster ? oceanSideFor(leftPlate, rightPlate) : 'none',
     leftPlateKo,
     rightPlateKo,
     leftTypeKo,

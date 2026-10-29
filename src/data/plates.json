@@ -217,7 +217,7 @@
     },
     {
       "id": "philippine",
-      "nameKo": "필리핀판",
+      "nameKo": "필리핀해판",
       "nameEn": "Philippine Sea Plate",
       "type": "oceanic",
       "color": "#6a86a4",
@@ -365,7 +365,7 @@
     },
     {
       "id": "nubia",
-      "nameKo": "누비아판",
+      "nameKo": "아프리카판(누비아)",
       "nameEn": "Nubian Plate",
       "type": "continental",
       "color": "#ad8a63",
@@ -430,7 +430,7 @@
     },
     {
       "id": "somalia",
-      "nameKo": "소말리아판",
+      "nameKo": "아프리카판(소말리아)",
       "nameEn": "Somali Plate",
       "type": "continental",
       "color": "#c39a6b",

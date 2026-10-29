@@ -17,6 +17,7 @@ import {
   motionVectorAt,
   normalizeLon,
   projectToTangent,
+  tangentBasis,
   type LatLon
 } from './sphere';
 
@@ -592,10 +593,21 @@ export function boundaryTypeColor(type: BoundaryType): string {
   }
 }
 
+export function orderedPlates(cluster: BoundaryCluster): [Plate, Plate] {
+  const a = PLATE_BY_ID.get(cluster.plateA);
+  const b = PLATE_BY_ID.get(cluster.plateB);
+  if (!a || !b) throw new Error(`Unknown plates for boundary ${cluster.id}`);
+  const { east, north } = tangentBasis(cluster.representative.lat, cluster.representative.lon);
+  const eastComponent = cluster.normal.dot(east);
+  const northComponent = cluster.normal.dot(north);
+  const swap =
+    Math.abs(eastComponent) >= Math.abs(northComponent) ? eastComponent < 0 : northComponent < 0;
+  return swap ? [b, a] : [a, b];
+}
+
 export function boundaryPlatesLabelKo(cluster: BoundaryCluster): string {
-  const a = PLATE_BY_ID.get(cluster.plateA)?.nameKo ?? cluster.plateA;
-  const b = PLATE_BY_ID.get(cluster.plateB)?.nameKo ?? cluster.plateB;
-  return `${a} · ${b}`;
+  const [westOrSouth, eastOrNorth] = orderedPlates(cluster);
+  return `${westOrSouth.nameKo} · ${eastOrNorth.nameKo}`;
 }
 
 export function boundaryRelativeMotionLabel(cluster: BoundaryCluster): string {

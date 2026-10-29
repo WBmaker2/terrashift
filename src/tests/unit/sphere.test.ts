@@ -82,15 +82,15 @@ describe('sphere geometry', () => {
     expect(east.dot(up)).toBeCloseTo(0, 9);
     expect(north.y).toBeGreaterThan(0.99);
     const motion = motionVectorAt({ eastCmYr: 2, northCmYr: 3 }, 0, 0);
-    expect(motion.z).toBeCloseTo(2, 9);
+    expect(motion.z).toBeCloseTo(-2, 9);
     expect(motion.y).toBeCloseTo(3, 9);
   });
 
   it('orients a boundary normal from plate A toward plate B', () => {
     const up = latLonToVector(0, 0);
     const tangent = new Vector3(0, 1, 0);
-    const towardB = new Vector3(0, 0, 1);
+    const towardB = new Vector3(0, 0, -1);
     const normal = boundaryNormal(up, tangent, towardB);
-    expect(normal.z).toBeCloseTo(1, 9);
+    expect(normal.z).toBeCloseTo(-1, 9);
   });
 });

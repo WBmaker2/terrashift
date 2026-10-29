@@ -33,14 +33,14 @@ export function latLonToVector(lat: number, lon: number, radius = 1): Vector3 {
   return new Vector3(
     cosPhi * Math.cos(lambda) * radius,
     Math.sin(phi) * radius,
-    cosPhi * Math.sin(lambda) * radius
+    -cosPhi * Math.sin(lambda) * radius
   );
 }
 
 export function vectorToLatLon(vector: Vector3): LatLon {
   const normalized = vector.clone().normalize();
   const lat = Math.asin(clamp(normalized.y, -1, 1)) / DEG;
-  const lon = Math.atan2(normalized.z, normalized.x) / DEG;
+  const lon = Math.atan2(-normalized.z, normalized.x) / DEG;
   return { lat, lon };
 }
 
@@ -132,13 +132,13 @@ export function tangentBasis(
 } {
   const up = latLonToVector(lat, lon);
   const northPole = new Vector3(0, 1, 0);
-  const east = new Vector3().crossVectors(up, northPole);
+  const east = new Vector3().crossVectors(northPole, up);
   if (east.lengthSq() < 1e-12) {
     east.set(1, 0, 0);
   } else {
     east.normalize();
   }
-  const north = new Vector3().crossVectors(east, up).normalize();
+  const north = new Vector3().crossVectors(up, east).normalize();
   return { up, east, north };
 }
 

@@ -126,53 +126,66 @@ export class CrossSectionView {
     const moho = height * 0.62;
     const bottom = height - (compact ? 8 : 22);
     const center = width * 0.5;
-    const oceanLeft = model.oceanSide !== 'right';
-    const labelLeft = oceanLeft ? model.rightPlateKo : model.leftPlateKo;
-    const labelRight = oceanLeft ? model.leftPlateKo : model.rightPlateKo;
-    const typeLeft = oceanLeft ? model.rightTypeKo : model.leftTypeKo;
-    const typeRight = oceanLeft ? model.leftTypeKo : model.rightTypeKo;
-    const trenchDepth = clampPx(model.features.trenchDepthKm * 3.2, 10, compact ? 26 : 54);
-    const mountainHeight = clampPx(model.features.mountainHeightKm * 7.2, 8, compact ? 38 : 72);
-    const seafloor = seaLevel + trenchDepth * 0.55;
-    const arcX = oceanLeft ? center + width * 0.2 : center - width * 0.2;
+    const bothOcean = model.oceanSide === 'both';
+    const oceanLeft = model.oceanSide === 'left' || bothOcean;
+    const oceanRight = model.oceanSide === 'right' || bothOcean;
+    const overridingRight = model.oceanSide === 'right' ? false : true;
+    const arcX = overridingRight ? center + width * 0.2 : center - width * 0.2;
     const arcY = seaLevel - clampPx(model.features.arcHeightKm * 4.5, 5, compact ? 24 : 46);
-    const slabEndX = oceanLeft ? center - width * 0.12 : center + width * 0.12;
+    const trenchDepth = clampPx(model.features.trenchDepthKm * 3.2, 10, compact ? 26 : 54);
+    const mountainHeight = bothOcean
+      ? 0
+      : clampPx(model.features.mountainHeightKm * 7.2, 8, compact ? 38 : 72);
+    const seafloor = seaLevel + trenchDepth * 0.55;
+    const slabEndX = overridingRight ? center + width * 0.14 : center - width * 0.14;
 
     this.drawMantle(ctx, left, right, moho, bottom);
-    this.drawWater(
-      ctx,
-      oceanLeft ? left : center,
-      oceanLeft ? center : right,
-      seaLevel,
-      seafloor,
-      compact
-    );
+    if (bothOcean) {
+      this.drawWater(ctx, left, center, seaLevel, seafloor, compact);
+      this.drawWater(ctx, center, right, seaLevel, seafloor, compact);
+    } else if (oceanLeft) {
+      this.drawWater(ctx, left, center, seaLevel, seafloor, compact);
+    } else if (oceanRight) {
+      this.drawWater(ctx, center, right, seaLevel, seafloor, compact);
+    }
 
     ctx.save();
     ctx.beginPath();
-    if (oceanLeft) {
-      ctx.moveTo(left, seaLevel + 3);
-      ctx.lineTo(center - width * 0.04, seaLevel + 3);
-      ctx.lineTo(center - width * 0.015, seafloor);
-      ctx.lineTo(center, seafloor + trenchDepth * 0.4);
+    if (bothOcean) {
+      ctx.moveTo(left, seafloor);
+      ctx.lineTo(center - width * 0.04, seafloor);
+      ctx.lineTo(center - width * 0.012, seafloor + trenchDepth * 0.25);
+      ctx.lineTo(center, seafloor + trenchDepth * 0.65);
+      ctx.lineTo(center + width * 0.012, seafloor + trenchDepth * 0.25);
+      ctx.lineTo(center + width * 0.04, seafloor);
+      const arcWidth = width * 0.075;
+      ctx.lineTo(arcX - arcWidth, seafloor);
+      ctx.quadraticCurveTo(arcX - arcWidth * 0.32, arcY, arcX, arcY);
+      ctx.quadraticCurveTo(arcX + arcWidth * 0.32, arcY, arcX + arcWidth, seafloor);
+      ctx.lineTo(right, seafloor);
+    } else if (oceanLeft) {
+      ctx.moveTo(left, seafloor);
+      ctx.lineTo(center - width * 0.04, seafloor);
+      ctx.lineTo(center - width * 0.012, seafloor + trenchDepth * 0.25);
+      ctx.lineTo(center, seafloor + trenchDepth * 0.65);
       ctx.lineTo(center + width * 0.02, seafloor);
       ctx.lineTo(center + width * 0.1, seaLevel - mountainHeight * 0.12);
       ctx.lineTo(center + width * 0.22, seaLevel - mountainHeight);
       ctx.lineTo(center + width * 0.32, seaLevel - mountainHeight * 0.22);
       ctx.lineTo(right, seaLevel + 3);
     } else {
-      ctx.moveTo(right, seaLevel + 3);
-      ctx.lineTo(center + width * 0.04, seaLevel + 3);
-      ctx.lineTo(center + width * 0.015, seafloor);
-      ctx.lineTo(center, seafloor + trenchDepth * 0.4);
+      ctx.moveTo(right, seafloor);
+      ctx.lineTo(center + width * 0.04, seafloor);
+      ctx.lineTo(center + width * 0.012, seafloor + trenchDepth * 0.25);
+      ctx.lineTo(center, seafloor + trenchDepth * 0.65);
       ctx.lineTo(center - width * 0.02, seafloor);
       ctx.lineTo(center - width * 0.1, seaLevel - mountainHeight * 0.12);
       ctx.lineTo(center - width * 0.22, seaLevel - mountainHeight);
       ctx.lineTo(center - width * 0.32, seaLevel - mountainHeight * 0.22);
       ctx.lineTo(left, seaLevel + 3);
     }
-    ctx.lineTo(oceanLeft ? right : left, moho);
-    ctx.lineTo(oceanLeft ? left : right, moho);
+    ctx.lineTo(right, moho);
+    ctx.lineTo(left, moho);
     ctx.closePath();
     const crustGradient = ctx.createLinearGradient(0, seaLevel - mountainHeight, 0, moho);
     crustGradient.addColorStop(0, '#75604a');
@@ -185,39 +198,32 @@ export class CrossSectionView {
     ctx.stroke();
     ctx.restore();
 
-    this.drawSlab(
-      ctx,
-      center,
-      seafloor,
-      slabEndX,
-      bottom,
-      oceanLeft,
-      model.features.slabDepthKm,
-      compact
-    );
+    this.drawSlab(ctx, center, seafloor, slabEndX, bottom, model.features.slabDepthKm, compact);
     this.drawConvergenceArrows(ctx, oceanLeft, left, right, center, seaLevel, compact);
     this.drawVolcano(ctx, arcX, arcY, seaLevel, compact);
     this.drawMagmaPath(ctx, center, seafloor, arcX, arcY + (compact ? 3 : 6), compact);
     this.drawEarthquakeDots(ctx, center, seafloor, slabEndX, bottom, compact);
 
     const fs = compact ? 9 : 11;
+    const oceanColor = 'rgba(170, 232, 245, 0.9)';
+    const landColor = 'rgba(255, 225, 189, 0.9)';
     this.label(
       ctx,
-      oceanLeft ? left + 8 : right - 8,
+      left + 8,
       seaLevel + (compact ? 16 : 30),
-      oceanLeft ? labelLeft : labelRight,
-      oceanLeft ? 'left' : 'right',
+      model.leftPlateKo,
+      'left',
       fs,
-      'rgba(170, 232, 245, 0.9)'
+      oceanLeft && !model.leftTypeKo.includes('대륙') ? oceanColor : landColor
     );
     this.label(
       ctx,
-      oceanLeft ? right - 8 : left + 8,
-      seaLevel - mountainHeight - 8,
-      oceanLeft ? labelRight : labelLeft,
-      oceanLeft ? 'right' : 'left',
+      right - 8,
+      seaLevel + (compact ? 16 : 30),
+      model.rightPlateKo,
+      'right',
       fs,
-      'rgba(255, 225, 189, 0.9)'
+      oceanRight && !model.rightTypeKo.includes('대륙') ? oceanColor : landColor
     );
     this.label(
       ctx,
@@ -248,22 +254,24 @@ export class CrossSectionView {
         'rgba(190, 210, 225, 0.88)'
       );
       this.label(ctx, width / 2, bottom - 10, '맨틀', 'center', fs, 'rgba(207, 180, 164, 0.72)');
-      this.label(
-        ctx,
-        oceanLeft ? right - width * 0.14 : left + width * 0.14,
-        seaLevel - mountainHeight * 0.55,
-        '산맥',
-        'center',
-        fs,
-        'rgba(255, 225, 189, 0.8)'
-      );
+      if (!bothOcean) {
+        this.label(
+          ctx,
+          overridingRight ? right - width * 0.14 : left + width * 0.14,
+          seaLevel - mountainHeight * 0.55,
+          '산맥',
+          'center',
+          fs,
+          'rgba(255, 225, 189, 0.8)'
+        );
+      }
     }
-    if (typeLeft || typeRight) {
+    if (model.leftTypeKo || model.rightTypeKo) {
       this.label(
         ctx,
         left + 8,
         height - 12,
-        `${typeLeft} · ${typeRight}`,
+        `${model.leftTypeKo} · ${model.rightTypeKo}`,
         'left',
         compact ? 8 : 10,
         'rgba(180, 208, 216, 0.62)'
@@ -801,7 +809,6 @@ export class CrossSectionView {
     seafloor: number,
     endX: number,
     bottom: number,
-    oceanLeft: boolean,
     slabDepthKm: number,
     compact: boolean
   ): void {
@@ -814,7 +821,7 @@ export class CrossSectionView {
     ctx.beginPath();
     ctx.moveTo(center, seafloor + 2);
     ctx.quadraticCurveTo(
-      oceanLeft ? center - 26 : center + 26,
+      center + (endX - center) * 0.35,
       seafloor + (endY - seafloor) * 0.42,
       endX,
       endY
@@ -839,7 +846,7 @@ export class CrossSectionView {
     ctx.lineWidth = compact ? 1.6 : 2.6;
     ctx.setLineDash([compact ? 3 : 5, compact ? 3 : 4]);
     ctx.beginPath();
-    ctx.moveTo(center + (arcX > center ? -12 : 12), seafloor + (compact ? 30 : 48));
+    ctx.moveTo(center + (arcX - center) * 0.18, seafloor + (compact ? 30 : 48));
     ctx.quadraticCurveTo(arcX, arcY + (compact ? 20 : 34), arcX, arcY);
     ctx.stroke();
     ctx.restore();
@@ -963,8 +970,8 @@ export class CrossSectionView {
     ctx.fillStyle = 'rgba(255, 224, 184, 0.65)';
     ctx.lineWidth = compact ? 1.2 : 1.6;
     const y = seaLevel - (compact ? 12 : 20);
-    const oceanStart = oceanLeft ? left + 20 : center + 20;
-    const oceanEnd = oceanLeft ? center - 24 : right - 20;
+    const oceanStart = oceanLeft ? left + 20 : right - 20;
+    const oceanEnd = oceanLeft ? center - 24 : center + 24;
     this.arrow(ctx, oceanStart, y, oceanEnd, y, compact ? 4 : 6);
     const landStart = oceanLeft ? right - 20 : left + 20;
     const landEnd = oceanLeft ? center + 32 : center - 32;

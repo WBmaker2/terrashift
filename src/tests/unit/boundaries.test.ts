@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Vector3 } from 'three';
 import {
+  boundaryPlatesLabelKo,
   buildBoundaries,
   classifyBoundary,
   classifyVelocity,
@@ -116,6 +117,22 @@ describe('real plate boundary mosaic', () => {
       })
     ];
     for (const match of matches) expect(match).not.toBeNull();
+  });
+
+  it('labels plate pairs from west to east or south to north', () => {
+    const transform = findBoundaryMatch(clusters, {
+      plates: ['north-america', 'pacific'],
+      type: 'transform'
+    });
+    expect(transform).not.toBeNull();
+    if (transform) expect(boundaryPlatesLabelKo(transform)).toBe('태평양판 · 북아메리카판');
+    const andes = findBoundaryMatch(clusters, {
+      plates: ['nazca', 'south-america'],
+      type: 'convergent',
+      subtype: 'oceanic-continental'
+    });
+    expect(andes).not.toBeNull();
+    if (andes) expect(boundaryPlatesLabelKo(andes)).toBe('나스카판 · 남아메리카판');
   });
 
   it('finds a nearby boundary from a representative point', () => {

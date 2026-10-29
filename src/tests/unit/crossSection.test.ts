@@ -69,6 +69,45 @@ describe('cross-section descriptions', () => {
     expect(late.features.riftDepthKm).toBeGreaterThan(early.features.riftDepthKm);
   });
 
+  it('orders plates from west to east or south to north for the cross-section', () => {
+    const andes = findBoundaryMatch(clusters, {
+      plates: ['nazca', 'south-america'],
+      type: 'convergent',
+      subtype: 'oceanic-continental'
+    });
+    expect(andes).not.toBeNull();
+    if (andes) {
+      const model = describeCrossSection(andes, 60);
+      expect(model.leftPlateKo).toBe('나스카판');
+      expect(model.rightPlateKo).toBe('남아메리카판');
+      expect(model.oceanSide).toBe('left');
+    }
+
+    const pacific = findBoundaryMatch(clusters, {
+      plates: ['north-america', 'pacific'],
+      type: 'transform'
+    });
+    expect(pacific).not.toBeNull();
+    if (pacific) {
+      const model = describeCrossSection(pacific, 60);
+      expect(model.leftPlateKo).toBe('태평양판');
+      expect(model.rightPlateKo).toBe('북아메리카판');
+      expect(model.oceanSide).toBe('left');
+    }
+
+    const collision = findBoundaryMatch(clusters, {
+      plates: ['eurasia', 'indo-australia'],
+      type: 'convergent',
+      subtype: 'continental-continental'
+    });
+    expect(collision).not.toBeNull();
+    if (collision) {
+      const model = describeCrossSection(collision, 60);
+      expect(model.leftPlateKo).toBe('인도-오스트레일리아판');
+      expect(model.rightPlateKo).toBe('유라시아판');
+    }
+  });
+
   it('handles an empty selection without throwing', () => {
     const model = describeCrossSection(null, 0);
     expect(model.kind).toBe('inactive');
