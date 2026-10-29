@@ -229,12 +229,84 @@
     "predictionHintKo": "지구본을 돌려 태평양을 한 바퀴 둘러보고, 화산 표시가 경계선을 따라 이어지는지 확인하세요.",
     "explanationPromptKo": "불의 고리에서 화산과 지진이 함께 나타나는 이유는?",
     "explanationOptions": [
-      "여러 판이 만나는 수렴 경계가 이어지기 때문",
+      "여러 판이 만나는 수렴 경계를 따라 섭입이 일어나기 때문",
       "변환 경계만 이어지기 때문",
       "해령만 이어지기 때문"
     ],
-    "explanationAnswer": "여러 판이 만나는 수렴 경계가 이어지기 때문",
+    "explanationAnswer": "여러 판이 만나는 수렴 경계를 따라 섭입이 일어나기 때문",
     "explanationKo": "태평양판은 북아메리카, 남아메리카, 필리핀, 인도-오스트레일리아 등 여러 판과 만납니다. 대부분의 경계에서 해양판이 다른 판 아래로 섭입해 해구와 화산호가 만들어지고, 이 경계들이 태평양을 둘러싸 불의 고리를 이룹니다.",
     "takeawayKo": "불의 고리는 태평양 주변의 수렴 경계를 따라 이어지는 화산·지진 띠다."
+  },
+  {
+    "id": "misconception-earthquakes-make-mountains",
+    "titleKo": "오개념 교정: 지진이 산을 만든다?",
+    "concept": "boundary",
+    "difficulty": 2,
+    "promptKo": "'지진이 산을 만들어낸다' 라는 말은 맞을까?",
+    "setup": {
+      "myr": 80,
+      "match": {
+        "plates": ["eurasia", "indo-australia"],
+        "type": "convergent",
+        "subtype": "continental-continental"
+      },
+      "layers": {
+        "earthquakes": true,
+        "volcanoes": true,
+        "labels": true
+      },
+      "view": "globe",
+      "camera": {
+        "lat": 30,
+        "lon": 85,
+        "distance": 2.75
+      }
+    },
+    "options": ["아니오, 판 운동으로 지각이 밀리고 두꺼워져 산맥이 만들어진다", "예, 지진이 직접 산을 밀어 올린다", "예, 지진 에너지가 산을 형성한다"],
+    "answer": "아니오, 판 운동으로 지각이 밀리고 두꺼워져 산맥이 만들어진다",
+    "predictionHintKo": "수백만 년에 걸친 지각 두께 변화에 주목해 보세요.",
+    "explanationPromptKo": "히말라야가 높은 가장 직접적인 원인은?",
+    "explanationOptions": [
+      "두 대륙판이 계속 밀착하며 지각이 접히고 두꺼워지기 때문",
+      "수없이 반복된 대지진 때문",
+      "화산 분출 때문"
+    ],
+    "explanationAnswer": "두 대륙판이 계속 밀착하며 지각이 접히고 두꺼워지기 때문",
+    "explanationKo": "지진은 판 운동의 결과로 일어나는 현상입니다. 산맥은 수백만 년에 걸쳐 지각이 압축·융기되면서 만들어지며, 지진은 그 과정에서 에너지가 방출되는 것입니다.",
+    "takeawayKo": "지진은 산을 '만드는' 것이 아니라, 판이 움직이는 과정에서 '발생'하는 현상이다."
+  },
+  {
+    "id": "misconception-all-volcanoes-boundary",
+    "titleKo": "오개념 교정: 모든 화산은 경계에 있다?",
+    "concept": "ring-of-fire",
+    "difficulty": 2,
+    "promptKo": "모든 화산은 판 경계에서만 생길까?",
+    "setup": {
+      "myr": 0,
+      "layers": {
+        "earthquakes": true,
+        "volcanoes": true,
+        "hotspots": true,
+        "labels": true
+      },
+      "view": "globe",
+      "camera": {
+        "lat": 19,
+        "lon": -155,
+        "distance": 2.4
+      }
+    },
+    "options": ["아니오, 판 경계 밖의 열점에서도 화산이 생긴다", "예, 모든 화산은 경계에만 있다", "예, 열점은 경계의 일부다"],
+    "answer": "아니오, 판 경계 밖의 열점에서도 화산이 생긴다",
+    "predictionHintKo": "지구본에서 하와이 근처를 관찰하고, 경계선과 화산 위치를 비교해 보세요.",
+    "explanationPromptKo": "하와이 화산열도가 판 경계 밖에 생기는 이유는?",
+    "explanationOptions": [
+      "맨틀 깊은 곳의 고정된 열점 위를 판이 지나가면서 화산열도가 만들어지기 때문",
+      "해령이 갑자기 이동했기 때문",
+      "변환 단층이 부풀어 올랐기 때문"
+    ],
+    "explanationAnswer": "맨틀 깊은 곳의 고정된 열점 위를 판이 지나가면서 화산열도가 만들어지기 때문",
+    "explanationKo": "열점은 맨틀 깊은 곳에서 상승하는 고정된 마그마 기둥입니다. 판이 그 위를 천천히 움직이면서, 차례로 새로운 화산이 만들어져 화산열도를 형성합니다.",
+    "takeawayKo": "판 경계 밖에서도 열점에 의해 화산이 생길 수 있다."
   }
 ]

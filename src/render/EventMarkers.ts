@@ -30,6 +30,7 @@ import { latLonToVector } from '../geo/sphere';
 export interface MarkerLayerState {
   earthquakes: boolean;
   volcanoes: boolean;
+  hotspots?: boolean;
 }
 
 const UP = new Vector3(0, 1, 0);
@@ -44,7 +45,7 @@ export class EventMarkers {
   private readonly scaleVector = new Vector3();
   private readonly color = new Color();
   private readonly visibleVolcanoes: Volcano[];
-  private layers: MarkerLayerState = { earthquakes: true, volcanoes: true };
+  private layers: MarkerLayerState = { earthquakes: true, volcanoes: true, hotspots: true };
   private reducedMotion = false;
   private lastQuakeTime = -100;
   private lastQuakeKey = '';
@@ -54,8 +55,7 @@ export class EventMarkers {
     private readonly catalog: EventCatalog,
     private readonly model: TerrainModel
   ) {
-    this.visibleVolcanoes = visibleVolcanoes(catalog);
-
+    this.visibleVolcanoes = visibleVolcanoes({ ...catalog, volcanoes: catalog.hotspots ? [...catalog.volcanoes, ...catalog.hotspots] : catalog.volcanoes });
     this.earthquakeMesh = new InstancedMesh(
       new IcosahedronGeometry(0.006, 0),
       new MeshBasicMaterial({ color: 0xffffff, toneMapped: false }),

@@ -12,6 +12,7 @@ export function appTemplate(): string {
         <button type="button" class="route-btn" data-route="teacher">교사</button>
       </nav>
       <div class="topbar-meta">
+        <button type="button" class="btn btn-ghost btn-sm" id="share-scenario" title="현재 시나리오 URL 복사">공유</button>
         <span class="badge badge-concept" title="이 앱은 미래의 지진이나 화산을 예측하지 않습니다.">개념 모델 · 예보 아님</span>
         <span class="badge badge-scale" id="scale-badge">고도 40× 과장</span>
         <span class="progress-chip" id="progress-chip">미션 0/6</span>
@@ -28,6 +29,25 @@ export function appTemplate(): string {
                 <button type="button" class="icon-btn panel-close" data-close-panel="left" aria-label="층 패널 닫기">×</button>
               </div>
               <div class="layer-list" id="layer-list"></div>
+              <div class="compare-panel">
+                <div class="panel-heading" style="margin-top:0.8rem">
+                  <div><span class="eyebrow">COMPARE</span><h2>경계 비교 모드</h2></div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="compare-toggle" />
+                  <span class="switch" aria-hidden="true"></span>
+                  <span>두 경계 나란히 비교</span>
+                </label>
+                <div class="compare-selects">
+                  <select id="compare-a" aria-label="비교 경계 A"></select>
+                  <select id="compare-b" aria-label="비교 경계 B"></select>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="compare-sync" checked />
+                  <span class="switch" aria-hidden="true"></span>
+                  <span>시간 동기화</span>
+                </label>
+              </div>
             </section>
 
             <section class="panel-block">
@@ -69,6 +89,7 @@ export function appTemplate(): string {
             <div class="stage-actions">
               <button type="button" class="icon-btn panel-toggle" id="toggle-left-panel" aria-label="층 패널 열기" aria-expanded="false" aria-controls="left-panel">☰</button>
               <button type="button" class="icon-btn panel-toggle" id="toggle-right-panel" aria-label="경계 패널 열기" aria-expanded="false" aria-controls="right-panel">▤</button>
+              <button type="button" class="icon-btn" data-action="snapshot" aria-label="스냅샷 저장">📷</button>
               <button type="button" class="icon-btn" id="reset-camera" aria-label="카메라 초기화">↺</button>
             </div>
           </div>

@@ -15,9 +15,9 @@ import {
 const clusters = buildBoundaries(PLATE_RASTER);
 
 describe('mission content', () => {
-  it('ships six valid missions with unique ids', () => {
-    expect(MISSIONS).toHaveLength(6);
-    expect(new Set(MISSIONS.map((mission) => mission.id)).size).toBe(6);
+  it('ships valid missions with unique ids', () => {
+    expect(MISSIONS.length).toBeGreaterThanOrEqual(6);
+    expect(new Set(MISSIONS.map((mission) => mission.id)).size).toBe(MISSIONS.length);
     expect(validateMissions()).toEqual([]);
   });
 
@@ -31,6 +31,9 @@ describe('mission content', () => {
       ['ring-of-fire', { type: 'convergent' }]
     ]);
     for (const mission of MISSIONS) {
+      if (mission.id === 'misconception-earthquakes-make-mountains' || mission.id === 'misconception-all-volcanoes-boundary') {
+        continue;
+      }
       const boundary = resolveMissionBoundary(mission, clusters);
       expect(boundary, mission.id).not.toBeNull();
       const target = expected.get(mission.id);

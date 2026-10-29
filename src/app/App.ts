@@ -54,7 +54,7 @@ import {
   type Route,
   type ViewMode
 } from './state';
-import { navigate, parseRoute } from './routes';
+import { copyCurrentScenario, navigate, parseRoute, parseUrlScenario } from './routes';
 
 interface Elements {
   exploreLayout: HTMLElement;
@@ -93,6 +93,7 @@ interface Elements {
   mobileSelectionTab: HTMLButtonElement;
   toggleLeftPanel: HTMLButtonElement;
   toggleRightPanel: HTMLButtonElement;
+  shareScenario: HTMLButtonElement;
 }
 
 const LAYER_DEFINITIONS: Array<{ key: keyof LayerState; label: string; note?: string }> = [
@@ -100,6 +101,7 @@ const LAYER_DEFINITIONS: Array<{ key: keyof LayerState; label: string; note?: st
   { key: 'labels', label: '이름표', note: '판과 경계 이름' },
   { key: 'earthquakes', label: '지진', note: '깊이에 따라 색이 달라짐' },
   { key: 'volcanoes', label: '화산', note: '수렴·발산 경계에 나타남' },
+  { key: 'hotspots', label: '열점(핫스팟)', note: '판 경계와 무관한 화산 (하와이 등)' },
   { key: 'crustAge', label: '해양 지각 나이', note: '해령에서 멀수록 오래됨' },
   { key: 'plateColors', label: '판 색', note: '판별 색을 지형에 섞음' }
 ];
@@ -204,7 +206,15 @@ export class App {
     const persisted = loadProgress();
     let state = createInitialState(this.mediaQuery.matches);
     state = mergeProgress(state, persisted);
-    state.route = parseRoute(window.location.hash);
+    const urlScenario = parseUrlScenario(window.location.hash);
+    if (urlScenario.route) state.route = urlScenario.route;
+    else state.route = parseRoute(window.location.hash);
+    if (urlScenario.myr !== undefined) state.time = { ...state.time, myr: urlScenario.myr };
+    if (urlScenario.view) state.view = urlScenario.view;
+    if (urlScenario.layers) state.layers = { ...state.layers, ...urlScenario.layers };
+    if (urlScenario.missionId) state.mission = { ...state.mission, currentId: urlScenario.missionId };
+    if (urlScenario.boundaryId) state.selection = { ...state.selection, boundaryId: urlScenario.boundaryId, plateId: null };
+    else if (urlScenario.plateId) state.selection = { ...state.selection, plateId: urlScenario.plateId, boundaryId: null };
     if (window.innerWidth < 768) {
       state.layers = { ...state.layers, labels: false };
     }
@@ -285,7 +295,8 @@ export class App {
       printWorksheet: qs('#print-worksheet'),
       mobileSelectionTab: qs('#mobile-selection-tab'),
       toggleLeftPanel: qs('#toggle-left-panel'),
-      toggleRightPanel: qs('#toggle-right-panel')
+      toggleRightPanel: qs('#toggle-right-panel'),
+      shareScenario: qs('#share-scenario')
     };
   }
 
@@ -344,7 +355,21 @@ export class App {
       <span><i class="legend-line convergent"></i>수렴 경계 · 해구/산맥/화산호</span>
       <span><i class="legend-line transform"></i>변환 경계 · 단층/얕은 지진</span>
       <span><i class="legend-line inactive"></i>활동이 약한 경계</span>
+      <span><i class="dot dot-volcano"></i>열점(판 경계 밖)</span>
     `;
+    this.populateCompareSelects();
+  }
+
+  private populateCompareSelects(): void {
+    const compareA = document.getElementById('compare-a') as HTMLSelectElement | null;
+    const compareB = document.getElementById('compare-b') as HTMLSelectElement | null;
+    if (!compareA || !compareB) return;
+    const options = this.boundaries
+      .filter((b) => b.type !== 'inactive')
+      .map((b) => `<option value="${escapeAttr(b.id)}">${escapeHtml(boundaryPlatesLabelKo(b))} · ${escapeHtml(boundaryTypeLabelKo(b.type))}</option>`)
+      .join('');
+    compareA.innerHTML = `<option value="">선택</option>${options}`;
+    compareB.innerHTML = `<option value="">선택</option>${options}`;
   }
 
   private attachHandlers(): void {
@@ -355,6 +380,7 @@ export class App {
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('beforeunload', this.handleBeforeUnload);
     document.addEventListener('click', this.handleDocumentClick);
+    this.maybeShowTutorial();
   }
 
   private readonly handleClick = (event: MouseEvent): void => {
@@ -389,7 +415,27 @@ export class App {
     const missionButton = target.closest<HTMLElement>('[data-mission-id]');
     if (missionButton) {
       const mission = missionById(missionButton.dataset.missionId ?? null);
-      if (mission) this.startMission(mission);
+      if (mission) {
+        this.startMission(mission);
+        return;
+      }
+    }
+    const snapshot = target.closest<HTMLElement>('[data-action="snapshot"]');
+    if (snapshot) {
+      this.captureSnapshot();
+      return;
+    }
+    const tutorialSkip = target.closest<HTMLElement>('[data-tutorial="skip"]');
+    if (tutorialSkip) {
+      this.store.update((s) => ({ ...s, preferences: { ...s.preferences, tutorialSeen: true } }));
+      document.querySelector('.tutorial-overlay')?.remove();
+      return;
+    }
+    const tutorialStart = target.closest<HTMLElement>('[data-tutorial="start"]');
+    if (tutorialStart) {
+      this.store.update((s) => ({ ...s, preferences: { ...s.preferences, tutorialSeen: true } }));
+      document.querySelector('.tutorial-overlay')?.remove();
+      this.showToast('경계선을 클릭해 탐험을 시작해 보세요.');
       return;
     }
     const presetButton = target.closest<HTMLElement>('[data-preset]');
@@ -463,6 +509,10 @@ export class App {
       this.setView('globe');
       return;
     }
+    if (target.closest('#share-scenario')) {
+      this.shareCurrentScenario();
+      return;
+    }
     if (target.closest('#teacher-reset')) {
       this.confirmReset();
       return;
@@ -530,6 +580,40 @@ export class App {
       if (!mission) return;
       if (target.name === 'prediction') this.draftPrediction[mission.id] = target.value;
       else this.draftExplanation[mission.id] = target.value;
+      return;
+    }
+    if (target.id === 'compare-toggle') {
+      const enabled = (target as HTMLInputElement).checked;
+      this.store.update((state) => ({
+        ...state,
+        comparison: { ...(state.comparison ?? createInitialState().comparison!), enabled }
+      }));
+      this.showToast(enabled ? '경계 비교 모드가 활성화되었습니다.' : '경계 비교 모드가 비활성화되었습니다.');
+      return;
+    }
+    if (target.id === 'compare-a') {
+      const boundaryIdA = (target as HTMLSelectElement).value || null;
+      this.store.update((state) => ({
+        ...state,
+        comparison: { ...(state.comparison ?? createInitialState().comparison!), boundaryIdA }
+      }));
+      return;
+    }
+    if (target.id === 'compare-b') {
+      const boundaryIdB = (target as HTMLSelectElement).value || null;
+      this.store.update((state) => ({
+        ...state,
+        comparison: { ...(state.comparison ?? createInitialState().comparison!), boundaryIdB }
+      }));
+      return;
+    }
+    if (target.id === 'compare-sync') {
+      const syncTime = (target as HTMLInputElement).checked;
+      this.store.update((state) => ({
+        ...state,
+        comparison: { ...(state.comparison ?? createInitialState().comparison!), syncTime }
+      }));
+      return;
     }
   };
 
@@ -766,7 +850,7 @@ export class App {
 
   private applyLayers(state: AppState): void {
     const layers = this.effectiveLayers(state);
-    this.globe?.setLayers(layers);
+    this.globe?.setLayers({ ...layers, hotspots: state.layers.hotspots });
     this.syncLayerList();
     if (state.route === 'teacher') this.renderTeacher();
   }
@@ -811,6 +895,7 @@ export class App {
       state.time.playing ? '시간 일시정지' : '시간 재생'
     );
     this.elements.speedSelect.value = String(state.time.speed);
+    this.syncCompareUI(state);
     const now = performance.now();
     if (now - this.lastReadoutTime > 220 || !previous || previous.selection !== state.selection) {
       this.renderReadout();
@@ -830,6 +915,29 @@ export class App {
         this.lastPreviewTime = now;
       }
     }
+    this.renderComparison();
+  }
+
+  private syncCompareUI(state: AppState): void {
+    const compareToggle = document.getElementById('compare-toggle') as HTMLInputElement | null;
+    const compareA = document.getElementById('compare-a') as HTMLSelectElement | null;
+    const compareB = document.getElementById('compare-b') as HTMLSelectElement | null;
+    const compareSync = document.getElementById('compare-sync') as HTMLInputElement | null;
+    const comparison = state.comparison ?? createInitialState().comparison!;
+    if (compareToggle) compareToggle.checked = comparison.enabled;
+    if (compareA) compareA.value = comparison.boundaryIdA ?? '';
+    if (compareB) compareB.value = comparison.boundaryIdB ?? '';
+    if (compareSync) compareSync.checked = comparison.syncTime;
+  }
+
+  private renderComparison(): void {
+    const state = this.store.state;
+    const comparison = state.comparison;
+    if (!comparison?.enabled) return;
+    const a = comparison.boundaryIdA ? this.boundaries.find((b) => b.id === comparison.boundaryIdA) : null;
+    const b = comparison.boundaryIdB ? this.boundaries.find((b) => b.id === comparison.boundaryIdB) : null;
+    if (!a || !b) return;
+    this.announce(`경계 비교: ${boundaryPlatesLabelKo(a)} vs ${boundaryPlatesLabelKo(b)}, ${formatTimeShort(state.time.myr)}`);
   }
 
   private syncLayerList(): void {
@@ -1255,6 +1363,19 @@ export class App {
                 </button>`
               ).join('')}
             </div>
+          </section>
+          <section class="teacher-card">
+            <h2>수업 플랜 템플릿</h2>
+            <table class="mission-table">
+              <thead><tr><th>단계</th><th>시간</th><th>활동</th><th>교사 역할</th></tr></thead>
+              <tbody>
+                <tr><td><strong>도입</strong></td><td>5분</td><td>판구조론 질문 제시, 지구본 관찰</td><td>사전 지식 확인, 오개념 떠올리기</td></tr>
+                <tr><td><strong>탐구</strong></td><td>15분</td><td>미션 1–2 수행 (예측→관찰→설명)</td><td>경계 선택 유도, 근거 질문하기</td></tr>
+                <tr><td><strong>심화</strong></td><td>10분</td><td>비교 모드로 수렴 유형 비교</td><td>차이점 정리 유도</td></tr>
+                <tr><td><strong>정리</strong></td><td>10분</td><td>미션 5–6 또는 토론, 활동지 마무리</td><td>핵심 정리, 오개념 교정</td></tr>
+              </tbody>
+            </table>
+            <p class="fine-print">권장 순서: 탐험 → 미션 → 교사 모드에서 장면 공유(URL) → 활동지 인쇄</p>
           </section>
         </div>
         <div>
@@ -1721,6 +1842,24 @@ export class App {
     this.playbackFrame = requestAnimationFrame(this.tickPlayback);
   };
 
+  private shareCurrentScenario(): void {
+    const state = this.store.state;
+    try {
+      copyCurrentScenario({
+        route: state.route,
+        missionId: state.mission.currentId,
+        boundaryId: state.selection.boundaryId,
+        plateId: state.selection.plateId,
+        myr: state.time.myr,
+        view: state.view,
+        layers: JSON.parse(JSON.stringify(state.layers)) as Record<string, boolean>
+      });
+      this.showToast('시나리오 URL이 복사되었습니다.');
+    } catch {
+      this.showToast('URL 복사에 실패했습니다.');
+    }
+  }
+
   private seek(myr: number): void {
     this.pausePlayback();
     this.store.update((state) => ({
@@ -1789,11 +1928,13 @@ export class App {
   private showToast(message: string): void {
     this.elements.toast.textContent = message;
     this.elements.toast.classList.add('show');
+    this.elements.toast.classList.add('visible');
     if (this.toastTimer !== null) window.clearTimeout(this.toastTimer);
     this.toastTimer = window.setTimeout(() => {
       this.elements.toast.classList.remove('show');
+      this.elements.toast.classList.remove('visible');
       this.toastTimer = null;
-    }, 2800);
+    }, 2000);
   }
 
   private announce(message: string): void {
@@ -1893,6 +2034,8 @@ export class App {
   }
 
   private printWorksheet(): void {
+    this.buildWorksheet();
+    this.showToast('활동지를 인쇄/저장(PDF)할 수 있도록 준비했습니다.');
     window.print();
   }
 
@@ -1902,6 +2045,56 @@ export class App {
       this.saveTimer = null;
       saveProgress(this.store.state);
     }, 1000);
+  }
+
+  private maybeShowTutorial(): void {
+    const state = this.store.state;
+    if (state.preferences.tutorialSeen) return;
+    const overlay = document.createElement('div');
+    overlay.className = 'tutorial-overlay';
+    overlay.innerHTML = `
+      <div class="tutorial-card" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+        <div><span class="eyebrow">TUTORIAL</span><h2 id="tutorial-title">TerraShift 첫걸음</h2></div>
+        <p>판 경계를 클릭해 선택하고, 시간을 스크럽하며 지형 변화를 관찰해 보세요.</p>
+        <div class="tutorial-steps">
+          <div class="tutorial-step"><span class="tutorial-step-num">1</span><div><strong>경계 선택</strong><br/>지구본을 돌려 경계선을 클릭합니다.</div></div>
+          <div class="tutorial-step"><span class="tutorial-step-num">2</span><div><strong>시간 탐험</strong><br/>타임라인을 움직이며 0–200 Myr 변화를 관찰합니다.</div></div>
+          <div class="tutorial-step"><span class="tutorial-step-num">3</span><div><strong>단면도 확인</strong><br/>개념 단면도로 깊이 과정을 살펴봅니다.</div></div>
+          <div class="tutorial-step"><span class="tutorial-step-num">4</span><div><strong>미션 도전</strong><br/>미션 탭에서 예측→설명 퀴즈를 풀어봅니다.</div></div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary btn-pulse" data-tutorial="start">시작하기</button>
+          <button type="button" class="btn btn-ghost" data-tutorial="skip">다시 보지 않기</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      const action = target.closest('[data-tutorial]')?.getAttribute('data-tutorial');
+      if (action === 'start' || action === 'skip') {
+        this.store.update((s) => ({ ...s, preferences: { ...s.preferences, tutorialSeen: true } }));
+        overlay.remove();
+      }
+    });
+  }
+
+  private captureSnapshot(): void {
+    try {
+      const canvas = this.elements.globeContainer.querySelector('canvas') as HTMLCanvasElement | null;
+      if (!canvas) {
+        this.showToast('스냅샷을 캡처할 수 없습니다.');
+        return;
+      }
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `terrashift-snapshot-${Date.now()}.png`;
+      link.click();
+      this.showToast('스냅샷을 저장했습니다.');
+    } catch {
+      this.showToast('스냅샷 캡처에 실패했습니다.');
+    }
   }
 
   private exposeDebug(): void {

@@ -21,6 +21,7 @@ export interface LayerState {
   volcanoes: boolean;
   crustAge: boolean;
   plateColors: boolean;
+  hotspots?: boolean;
 }
 
 export interface MissionState {
@@ -34,6 +35,15 @@ export interface MissionState {
 export interface Preferences {
   reducedMotion: boolean;
   showScaleWarning: boolean;
+  tutorialSeen?: boolean;
+  locale?: 'ko' | 'en';
+}
+
+export interface ComparisonState {
+  enabled: boolean;
+  boundaryIdA: string | null;
+  boundaryIdB: string | null;
+  syncTime: boolean;
 }
 
 export interface AppState {
@@ -44,6 +54,7 @@ export interface AppState {
   layers: LayerState;
   mission: MissionState;
   preferences: Preferences;
+  comparison?: ComparisonState;
 }
 
 export const DEFAULT_LAYERS: LayerState = {
@@ -52,7 +63,8 @@ export const DEFAULT_LAYERS: LayerState = {
   earthquakes: true,
   volcanoes: true,
   crustAge: false,
-  plateColors: true
+  plateColors: true,
+  hotspots: true
 };
 
 export function createInitialState(reducedMotion = false): AppState {
@@ -71,7 +83,15 @@ export function createInitialState(reducedMotion = false): AppState {
     },
     preferences: {
       reducedMotion,
-      showScaleWarning: true
+      showScaleWarning: true,
+      tutorialSeen: false,
+      locale: 'ko'
+    },
+    comparison: {
+      enabled: false,
+      boundaryIdA: null,
+      boundaryIdB: null,
+      syncTime: true
     }
   };
 }

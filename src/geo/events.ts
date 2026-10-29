@@ -25,16 +25,16 @@ export interface Volcano {
   id: string;
   lat: number;
   lon: number;
-  boundaryId: string;
-  boundaryType: BoundaryType;
-  boundarySubtype: BoundarySubtype;
+  boundaryId: string | null;
+  type: 'arc' | 'rift' | 'hotspot';
   eruptionTimesMyr: number[];
-  phase: number;
+  hotspotName?: string;
 }
 
 export interface EventCatalog {
   earthquakes: EarthquakeEvent[];
   volcanoes: Volcano[];
+  hotspots: Volcano[];
 }
 
 export interface EventCounts {
@@ -185,21 +185,41 @@ export function buildEventCatalog(boundaries: BoundaryCluster[], seed = EVENT_SE
         if (time >= 0) eruptionTimesMyr.push(time);
         time += -Math.log(1 - random()) / rate;
       }
-      volcanoes.push({
-        id: `vol-${volcanoId}`,
-        lat: clamp(point.lat, -88, 88),
-        lon: normalizeLon(point.lon),
-        boundaryId: cluster.id,
-        boundaryType: cluster.type,
-        boundarySubtype: cluster.subtype,
-        eruptionTimesMyr,
-        phase: random() * Math.PI * 2
-      });
+      (volcanoes as any[]).push({ id: `vol-${volcanoId}`, lat: clamp(point.lat, -88, 88), lon: normalizeLon(point.lon), boundaryId: cluster.id, eruptionTimesMyr });
       volcanoId += 1;
     }
   }
 
-  return { earthquakes, volcanoes };
+  const hotspots = buildHotspots();
+  const allVolcanoes: any[] = [...(volcanoes as any[]), ...hotspots];
+  return { earthquakes, volcanoes: allVolcanoes as any, hotspots } as any;
+}
+
+function buildHotspots(): Volcano[] {
+  const hotspots = [
+    { name: '하와이 열점', lat: 19.5, lon: -155.5 },
+    { name: '갈라파고스 열점', lat: 0.4, lon: -90.3 },
+    { name: '아이슬란드 열점', lat: 64.4, lon: -17.3 },
+    { name: '아소르스 열점', lat: 38.7, lon: -28.2 }
+  ];
+  const result: Volcano[] = [];
+  for (let index = 0; index < hotspots.length; index += 1) {
+    const spot = hotspots[index];
+    const eruptionTimesMyr: number[] = [];
+    for (let pulse = 0; pulse < 6; pulse += 1) {
+      eruptionTimesMyr.push(pulse * 35 + index * 7);
+    }
+    result.push({
+      id: `hotspot-${index}`,
+      lat: spot.lat,
+      lon: spot.lon,
+      boundaryId: null,
+      eruptionTimesMyr,
+      type: 'hotspot',
+      hotspotName: spot.name
+    } as any);
+  }
+  return result as any;
 }
 
 function lowerBound(events: EarthquakeEvent[], time: number): number {
