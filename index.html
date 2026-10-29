@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#071a22" />
+    <meta
+      name="description"
+      content="TerraShift — 판 경계와 지형 변화를 관찰하는 3D 지구과학 수업 도구"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <title>TerraShift — 판구조 시간여행</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #041117;
+        color: #eaf6fa;
+        font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', system-ui, sans-serif;
+      }
+      .boot {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        text-align: center;
+        padding: 24px;
+      }
+      .boot-mark {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #77d5e2 0%, #2b849b 38%, #0b2e3c 72%);
+        box-shadow: 0 0 34px rgba(95, 196, 216, 0.32);
+        animation: boot-pulse 1.8s ease-in-out infinite;
+      }
+      .boot strong {
+        font-size: 18px;
+        letter-spacing: 0.08em;
+      }
+      .boot span {
+        color: #93b4bf;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      @keyframes boot-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.9;
+        }
+        50% {
+          transform: scale(1.06);
+          opacity: 1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .boot-mark {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="boot">
+        <div class="boot-mark" aria-hidden="true"></div>
+        <strong>TerraShift</strong>
+        <span>판 모자이크와 2억 년의 모델 시간을 준비하는 중입니다.</span>
+      </div>
+    </div>
+    <noscript>
+      <div style="padding: 24px; color: #eaf6fa; background: #041117; min-height: 100%">
+        TerraShift는 JavaScript가 필요합니다. 브라우저 설정에서 JavaScript를 켜 주세요.
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

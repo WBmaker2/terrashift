@@ -1,0 +1,35 @@
+{
+  "name": "terrashift",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A deterministic 3D plate-tectonics time machine for the classroom.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.10.1",
+    "@types/three": "^0.180.0",
+    "eslint": "^9.39.1",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.1.12",
+    "vite-plugin-pwa": "^1.1.0",
+    "vitest": "^4.0.8"
+  }
+}

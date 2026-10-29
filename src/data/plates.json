@@ -1,0 +1,1248 @@
+{
+  "meta": {
+    "labelKo": "수업용 단순화 판 모자이크",
+    "noteKo": "실제 측지 자료가 아닌 수업용 개념 모델입니다."
+  },
+  "plates": [
+    {
+      "id": "pacific",
+      "nameKo": "태평양판",
+      "nameEn": "Pacific Plate",
+      "type": "oceanic",
+      "color": "#3d7ea6",
+      "motion": {
+        "eastCmYr": -4.0,
+        "northCmYr": 4.0
+      },
+      "polygon": [
+        {
+          "lat": 60,
+          "lon": 200
+        },
+        {
+          "lat": 60,
+          "lon": 235
+        },
+        {
+          "lat": 50,
+          "lon": 245
+        },
+        {
+          "lat": 35,
+          "lon": 250
+        },
+        {
+          "lat": 20,
+          "lon": 255
+        },
+        {
+          "lat": 5,
+          "lon": 270
+        },
+        {
+          "lat": -10,
+          "lon": 285
+        },
+        {
+          "lat": -32,
+          "lon": 290
+        },
+        {
+          "lat": -55,
+          "lon": 292
+        },
+        {
+          "lat": -62,
+          "lon": 260
+        },
+        {
+          "lat": -62,
+          "lon": 215
+        },
+        {
+          "lat": -62,
+          "lon": 180
+        },
+        {
+          "lat": -50,
+          "lon": 165
+        },
+        {
+          "lat": -35,
+          "lon": 175
+        },
+        {
+          "lat": -20,
+          "lon": 170
+        },
+        {
+          "lat": -5,
+          "lon": 160
+        },
+        {
+          "lat": 10,
+          "lon": 150
+        },
+        {
+          "lat": 25,
+          "lon": 140
+        },
+        {
+          "lat": 40,
+          "lon": 150
+        },
+        {
+          "lat": 50,
+          "lon": 165
+        }
+      ]
+    },
+    {
+      "id": "nazca",
+      "nameKo": "나스카판",
+      "nameEn": "Nazca Plate",
+      "type": "oceanic",
+      "color": "#4d8f9b",
+      "motion": {
+        "eastCmYr": 4.0,
+        "northCmYr": 1.5
+      },
+      "polygon": [
+        {
+          "lat": -2,
+          "lon": 285
+        },
+        {
+          "lat": -18,
+          "lon": 290
+        },
+        {
+          "lat": -38,
+          "lon": 288
+        },
+        {
+          "lat": -52,
+          "lon": 282
+        },
+        {
+          "lat": -45,
+          "lon": 265
+        },
+        {
+          "lat": -25,
+          "lon": 265
+        },
+        {
+          "lat": -10,
+          "lon": 270
+        },
+        {
+          "lat": -2,
+          "lon": 275
+        }
+      ],
+      "fallbackEligible": false
+    },
+    {
+      "id": "cocos",
+      "nameKo": "코코스판",
+      "nameEn": "Cocos Plate",
+      "type": "oceanic",
+      "color": "#5b9b8c",
+      "motion": {
+        "eastCmYr": 5.5,
+        "northCmYr": 0.5
+      },
+      "polygon": [
+        {
+          "lat": 20,
+          "lon": 255
+        },
+        {
+          "lat": 20,
+          "lon": 265
+        },
+        {
+          "lat": 10,
+          "lon": 272
+        },
+        {
+          "lat": 0,
+          "lon": 268
+        },
+        {
+          "lat": 5,
+          "lon": 252
+        },
+        {
+          "lat": 15,
+          "lon": 250
+        }
+      ],
+      "fallbackEligible": false
+    },
+    {
+      "id": "caribbean",
+      "nameKo": "카리브판",
+      "nameEn": "Caribbean Plate",
+      "type": "oceanic",
+      "color": "#5f8f77",
+      "motion": {
+        "eastCmYr": 1.5,
+        "northCmYr": 0.3
+      },
+      "polygon": [
+        {
+          "lat": 22,
+          "lon": -85
+        },
+        {
+          "lat": 22,
+          "lon": -60
+        },
+        {
+          "lat": 10,
+          "lon": -60
+        },
+        {
+          "lat": 8,
+          "lon": -75
+        },
+        {
+          "lat": 15,
+          "lon": -85
+        }
+      ],
+      "fallbackEligible": false
+    },
+    {
+      "id": "philippine",
+      "nameKo": "필리핀판",
+      "nameEn": "Philippine Sea Plate",
+      "type": "oceanic",
+      "color": "#6a86a4",
+      "motion": {
+        "eastCmYr": -0.5,
+        "northCmYr": 1.0
+      },
+      "polygon": [
+        {
+          "lat": 25,
+          "lon": 125
+        },
+        {
+          "lat": 25,
+          "lon": 145
+        },
+        {
+          "lat": 10,
+          "lon": 145
+        },
+        {
+          "lat": 0,
+          "lon": 130
+        },
+        {
+          "lat": 10,
+          "lon": 120
+        }
+      ],
+      "fallbackEligible": false
+    },
+    {
+      "id": "north-america",
+      "nameKo": "북아메리카판",
+      "nameEn": "North American Plate",
+      "type": "continental",
+      "color": "#9a7b55",
+      "motion": {
+        "eastCmYr": -2.5,
+        "northCmYr": -0.5
+      },
+      "polygon": [
+        {
+          "lat": 72,
+          "lon": 200
+        },
+        {
+          "lat": 72,
+          "lon": 300
+        },
+        {
+          "lat": 60,
+          "lon": 325
+        },
+        {
+          "lat": 50,
+          "lon": 330
+        },
+        {
+          "lat": 40,
+          "lon": 325
+        },
+        {
+          "lat": 25,
+          "lon": 315
+        },
+        {
+          "lat": 15,
+          "lon": 300
+        },
+        {
+          "lat": 8,
+          "lon": 285
+        },
+        {
+          "lat": 15,
+          "lon": 250
+        },
+        {
+          "lat": 30,
+          "lon": 245
+        },
+        {
+          "lat": 48,
+          "lon": 230
+        },
+        {
+          "lat": 60,
+          "lon": 210
+        }
+      ]
+    },
+    {
+      "id": "south-america",
+      "nameKo": "남아메리카판",
+      "nameEn": "South American Plate",
+      "type": "continental",
+      "color": "#a8855e",
+      "motion": {
+        "eastCmYr": -0.3,
+        "northCmYr": 0.5
+      },
+      "polygon": [
+        {
+          "lat": 12,
+          "lon": 280
+        },
+        {
+          "lat": 12,
+          "lon": 300
+        },
+        {
+          "lat": 5,
+          "lon": 320
+        },
+        {
+          "lat": -5,
+          "lon": 340
+        },
+        {
+          "lat": -20,
+          "lon": 340
+        },
+        {
+          "lat": -35,
+          "lon": 330
+        },
+        {
+          "lat": -55,
+          "lon": 305
+        },
+        {
+          "lat": -55,
+          "lon": 275
+        },
+        {
+          "lat": -30,
+          "lon": 285
+        },
+        {
+          "lat": -10,
+          "lon": 280
+        }
+      ]
+    },
+    {
+      "id": "nubia",
+      "nameKo": "누비아판",
+      "nameEn": "Nubian Plate",
+      "type": "continental",
+      "color": "#ad8a63",
+      "motion": {
+        "eastCmYr": 0.8,
+        "northCmYr": 0.7
+      },
+      "polygon": [
+        {
+          "lat": 37,
+          "lon": -20
+        },
+        {
+          "lat": 37,
+          "lon": 10
+        },
+        {
+          "lat": 32,
+          "lon": 35
+        },
+        {
+          "lat": 15,
+          "lon": 42
+        },
+        {
+          "lat": 5,
+          "lon": 38
+        },
+        {
+          "lat": -10,
+          "lon": 34
+        },
+        {
+          "lat": -20,
+          "lon": 33
+        },
+        {
+          "lat": -30,
+          "lon": 28
+        },
+        {
+          "lat": -35,
+          "lon": 20
+        },
+        {
+          "lat": -35,
+          "lon": 10
+        },
+        {
+          "lat": -20,
+          "lon": -10
+        },
+        {
+          "lat": 0,
+          "lon": -15
+        },
+        {
+          "lat": 20,
+          "lon": -18
+        }
+      ]
+    },
+    {
+      "id": "somalia",
+      "nameKo": "소말리아판",
+      "nameEn": "Somali Plate",
+      "type": "continental",
+      "color": "#c39a6b",
+      "motion": {
+        "eastCmYr": 2.0,
+        "northCmYr": 0.5
+      },
+      "polygon": [
+        {
+          "lat": 15,
+          "lon": 42
+        },
+        {
+          "lat": 12,
+          "lon": 50
+        },
+        {
+          "lat": 5,
+          "lon": 52
+        },
+        {
+          "lat": -5,
+          "lon": 45
+        },
+        {
+          "lat": -15,
+          "lon": 42
+        },
+        {
+          "lat": -25,
+          "lon": 38
+        },
+        {
+          "lat": -20,
+          "lon": 33
+        },
+        {
+          "lat": -10,
+          "lon": 34
+        },
+        {
+          "lat": 5,
+          "lon": 38
+        }
+      ]
+    },
+    {
+      "id": "eurasia",
+      "nameKo": "유라시아판",
+      "nameEn": "Eurasian Plate",
+      "type": "continental",
+      "color": "#8f7d5f",
+      "motion": {
+        "eastCmYr": 0.4,
+        "northCmYr": 0.2
+      },
+      "polygon": [
+        {
+          "lat": 72,
+          "lon": -10
+        },
+        {
+          "lat": 78,
+          "lon": 40
+        },
+        {
+          "lat": 75,
+          "lon": 100
+        },
+        {
+          "lat": 70,
+          "lon": 140
+        },
+        {
+          "lat": 60,
+          "lon": 170
+        },
+        {
+          "lat": 45,
+          "lon": 145
+        },
+        {
+          "lat": 35,
+          "lon": 140
+        },
+        {
+          "lat": 25,
+          "lon": 122
+        },
+        {
+          "lat": 20,
+          "lon": 108
+        },
+        {
+          "lat": 10,
+          "lon": 105
+        },
+        {
+          "lat": 8,
+          "lon": 98
+        },
+        {
+          "lat": 18,
+          "lon": 90
+        },
+        {
+          "lat": 22,
+          "lon": 70
+        },
+        {
+          "lat": 15,
+          "lon": 60
+        },
+        {
+          "lat": 12,
+          "lon": 45
+        },
+        {
+          "lat": 20,
+          "lon": 35
+        },
+        {
+          "lat": 30,
+          "lon": 32
+        },
+        {
+          "lat": 40,
+          "lon": 20
+        },
+        {
+          "lat": 43,
+          "lon": 0
+        },
+        {
+          "lat": 40,
+          "lon": -10
+        },
+        {
+          "lat": 60,
+          "lon": -25
+        },
+        {
+          "lat": 70,
+          "lon": -10
+        }
+      ]
+    },
+    {
+      "id": "indo-australia",
+      "nameKo": "인도-오스트레일리아판",
+      "nameEn": "Indo-Australian Plate",
+      "type": "continental",
+      "color": "#a58b5a",
+      "motion": {
+        "eastCmYr": 4.5,
+        "northCmYr": 4.5
+      },
+      "polygon": [
+        {
+          "lat": 32,
+          "lon": 72
+        },
+        {
+          "lat": 30,
+          "lon": 88
+        },
+        {
+          "lat": 25,
+          "lon": 95
+        },
+        {
+          "lat": 15,
+          "lon": 98
+        },
+        {
+          "lat": 5,
+          "lon": 105
+        },
+        {
+          "lat": -8,
+          "lon": 120
+        },
+        {
+          "lat": -10,
+          "lon": 140
+        },
+        {
+          "lat": -20,
+          "lon": 155
+        },
+        {
+          "lat": -40,
+          "lon": 150
+        },
+        {
+          "lat": -50,
+          "lon": 130
+        },
+        {
+          "lat": -45,
+          "lon": 95
+        },
+        {
+          "lat": -35,
+          "lon": 70
+        },
+        {
+          "lat": -20,
+          "lon": 50
+        },
+        {
+          "lat": 0,
+          "lon": 50
+        },
+        {
+          "lat": 10,
+          "lon": 65
+        }
+      ]
+    },
+    {
+      "id": "antarctica",
+      "nameKo": "남극판",
+      "nameEn": "Antarctic Plate",
+      "type": "continental",
+      "color": "#b9c4c9",
+      "motion": {
+        "eastCmYr": 0.4,
+        "northCmYr": 0.1
+      },
+      "polar": "south",
+      "polygon": [
+        {
+          "lat": -60,
+          "lon": -180
+        },
+        {
+          "lat": -60,
+          "lon": 180
+        },
+        {
+          "lat": -90,
+          "lon": 180
+        },
+        {
+          "lat": -90,
+          "lon": -180
+        }
+      ]
+    }
+  ],
+  "land": [
+    {
+      "id": "north-america",
+      "nameKo": "북아메리카",
+      "polygon": [
+        {
+          "lat": 70,
+          "lon": -165
+        },
+        {
+          "lat": 72,
+          "lon": -95
+        },
+        {
+          "lat": 60,
+          "lon": -55
+        },
+        {
+          "lat": 45,
+          "lon": -52
+        },
+        {
+          "lat": 25,
+          "lon": -80
+        },
+        {
+          "lat": 15,
+          "lon": -100
+        },
+        {
+          "lat": 8,
+          "lon": -80
+        },
+        {
+          "lat": 22,
+          "lon": -116
+        },
+        {
+          "lat": 30,
+          "lon": -118
+        },
+        {
+          "lat": 48,
+          "lon": -125
+        },
+        {
+          "lat": 60,
+          "lon": -140
+        }
+      ]
+    },
+    {
+      "id": "greenland",
+      "nameKo": "그린란드",
+      "polygon": [
+        {
+          "lat": 83,
+          "lon": -60
+        },
+        {
+          "lat": 83,
+          "lon": -20
+        },
+        {
+          "lat": 60,
+          "lon": -20
+        },
+        {
+          "lat": 60,
+          "lon": -60
+        }
+      ]
+    },
+    {
+      "id": "south-america",
+      "nameKo": "남아메리카",
+      "polygon": [
+        {
+          "lat": 12,
+          "lon": -78
+        },
+        {
+          "lat": 10,
+          "lon": -60
+        },
+        {
+          "lat": 5,
+          "lon": -35
+        },
+        {
+          "lat": -10,
+          "lon": -35
+        },
+        {
+          "lat": -25,
+          "lon": -40
+        },
+        {
+          "lat": -40,
+          "lon": -50
+        },
+        {
+          "lat": -55,
+          "lon": -68
+        },
+        {
+          "lat": -50,
+          "lon": -73
+        },
+        {
+          "lat": -20,
+          "lon": -73
+        },
+        {
+          "lat": -5,
+          "lon": -76
+        }
+      ]
+    },
+    {
+      "id": "africa",
+      "nameKo": "아프리카",
+      "polygon": [
+        {
+          "lat": 37,
+          "lon": -17
+        },
+        {
+          "lat": 37,
+          "lon": 10
+        },
+        {
+          "lat": 32,
+          "lon": 35
+        },
+        {
+          "lat": 15,
+          "lon": 42
+        },
+        {
+          "lat": 10,
+          "lon": 50
+        },
+        {
+          "lat": -5,
+          "lon": 42
+        },
+        {
+          "lat": -25,
+          "lon": 35
+        },
+        {
+          "lat": -35,
+          "lon": 20
+        },
+        {
+          "lat": -35,
+          "lon": 12
+        },
+        {
+          "lat": -10,
+          "lon": -15
+        },
+        {
+          "lat": 5,
+          "lon": -15
+        },
+        {
+          "lat": 15,
+          "lon": -18
+        },
+        {
+          "lat": 25,
+          "lon": -15
+        }
+      ]
+    },
+    {
+      "id": "madagascar",
+      "nameKo": "마다가스카르",
+      "polygon": [
+        {
+          "lat": -12,
+          "lon": 43
+        },
+        {
+          "lat": -25,
+          "lon": 47
+        },
+        {
+          "lat": -25,
+          "lon": 43
+        },
+        {
+          "lat": -12,
+          "lon": 49
+        }
+      ]
+    },
+    {
+      "id": "eurasia",
+      "nameKo": "유라시아",
+      "polygon": [
+        {
+          "lat": 72,
+          "lon": -10
+        },
+        {
+          "lat": 78,
+          "lon": 40
+        },
+        {
+          "lat": 75,
+          "lon": 100
+        },
+        {
+          "lat": 70,
+          "lon": 140
+        },
+        {
+          "lat": 60,
+          "lon": 170
+        },
+        {
+          "lat": 45,
+          "lon": 145
+        },
+        {
+          "lat": 35,
+          "lon": 140
+        },
+        {
+          "lat": 25,
+          "lon": 122
+        },
+        {
+          "lat": 20,
+          "lon": 108
+        },
+        {
+          "lat": 10,
+          "lon": 105
+        },
+        {
+          "lat": 8,
+          "lon": 98
+        },
+        {
+          "lat": 18,
+          "lon": 90
+        },
+        {
+          "lat": 22,
+          "lon": 70
+        },
+        {
+          "lat": 15,
+          "lon": 60
+        },
+        {
+          "lat": 25,
+          "lon": 55
+        },
+        {
+          "lat": 30,
+          "lon": 48
+        },
+        {
+          "lat": 35,
+          "lon": 35
+        },
+        {
+          "lat": 43,
+          "lon": 25
+        },
+        {
+          "lat": 43,
+          "lon": 0
+        },
+        {
+          "lat": 40,
+          "lon": -10
+        },
+        {
+          "lat": 50,
+          "lon": -5
+        },
+        {
+          "lat": 60,
+          "lon": 5
+        },
+        {
+          "lat": 70,
+          "lon": 20
+        }
+      ]
+    },
+    {
+      "id": "arabia",
+      "nameKo": "아라비아",
+      "polygon": [
+        {
+          "lat": 30,
+          "lon": 35
+        },
+        {
+          "lat": 30,
+          "lon": 60
+        },
+        {
+          "lat": 15,
+          "lon": 60
+        },
+        {
+          "lat": 12,
+          "lon": 45
+        },
+        {
+          "lat": 20,
+          "lon": 35
+        }
+      ]
+    },
+    {
+      "id": "india",
+      "nameKo": "인도",
+      "polygon": [
+        {
+          "lat": 30,
+          "lon": 68
+        },
+        {
+          "lat": 30,
+          "lon": 88
+        },
+        {
+          "lat": 22,
+          "lon": 92
+        },
+        {
+          "lat": 8,
+          "lon": 80
+        },
+        {
+          "lat": 15,
+          "lon": 72
+        }
+      ]
+    },
+    {
+      "id": "australia",
+      "nameKo": "오스트레일리아",
+      "polygon": [
+        {
+          "lat": -10,
+          "lon": 112
+        },
+        {
+          "lat": -12,
+          "lon": 130
+        },
+        {
+          "lat": -18,
+          "lon": 142
+        },
+        {
+          "lat": -38,
+          "lon": 148
+        },
+        {
+          "lat": -35,
+          "lon": 138
+        },
+        {
+          "lat": -32,
+          "lon": 115
+        },
+        {
+          "lat": -22,
+          "lon": 113
+        }
+      ]
+    },
+    {
+      "id": "japan",
+      "nameKo": "일본",
+      "polygon": [
+        {
+          "lat": 45,
+          "lon": 140
+        },
+        {
+          "lat": 44,
+          "lon": 146
+        },
+        {
+          "lat": 35,
+          "lon": 141
+        },
+        {
+          "lat": 33,
+          "lon": 132
+        },
+        {
+          "lat": 38,
+          "lon": 130
+        }
+      ]
+    },
+    {
+      "id": "philippines",
+      "nameKo": "필리핀",
+      "polygon": [
+        {
+          "lat": 18,
+          "lon": 120
+        },
+        {
+          "lat": 16,
+          "lon": 124
+        },
+        {
+          "lat": 10,
+          "lon": 126
+        },
+        {
+          "lat": 6,
+          "lon": 122
+        },
+        {
+          "lat": 10,
+          "lon": 118
+        }
+      ]
+    },
+    {
+      "id": "indonesia",
+      "nameKo": "인도네시아",
+      "polygon": [
+        {
+          "lat": 5,
+          "lon": 95
+        },
+        {
+          "lat": 0,
+          "lon": 104
+        },
+        {
+          "lat": -8,
+          "lon": 120
+        },
+        {
+          "lat": -10,
+          "lon": 140
+        },
+        {
+          "lat": -6,
+          "lon": 132
+        },
+        {
+          "lat": 0,
+          "lon": 120
+        },
+        {
+          "lat": -8,
+          "lon": 110
+        }
+      ]
+    },
+    {
+      "id": "new-zealand",
+      "nameKo": "뉴질랜드",
+      "polygon": [
+        {
+          "lat": -34,
+          "lon": 172
+        },
+        {
+          "lat": -38,
+          "lon": 178
+        },
+        {
+          "lat": -47,
+          "lon": 170
+        },
+        {
+          "lat": -45,
+          "lon": 166
+        }
+      ]
+    },
+    {
+      "id": "caribbean-islands",
+      "nameKo": "카리브 제도",
+      "polygon": [
+        {
+          "lat": 23,
+          "lon": -85
+        },
+        {
+          "lat": 23,
+          "lon": -70
+        },
+        {
+          "lat": 18,
+          "lon": -65
+        },
+        {
+          "lat": 17,
+          "lon": -75
+        },
+        {
+          "lat": 20,
+          "lon": -85
+        }
+      ]
+    },
+    {
+      "id": "iceland",
+      "nameKo": "아이슬란드",
+      "polygon": [
+        {
+          "lat": 67,
+          "lon": -25
+        },
+        {
+          "lat": 67,
+          "lon": -13
+        },
+        {
+          "lat": 63,
+          "lon": -13
+        },
+        {
+          "lat": 63,
+          "lon": -25
+        }
+      ]
+    },
+    {
+      "id": "antarctica",
+      "nameKo": "남극",
+      "polar": "south",
+      "polygon": [
+        {
+          "lat": -65,
+          "lon": -180
+        },
+        {
+          "lat": -65,
+          "lon": 180
+        },
+        {
+          "lat": -90,
+          "lon": 180
+        },
+        {
+          "lat": -90,
+          "lon": -180
+        }
+      ]
+    }
+  ]
+}
